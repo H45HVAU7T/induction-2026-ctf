@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+:root {
+    --bg-color: #050814;
+    --terminal-bg: #0b1329;
+    --primary: #00ff66;
+    --primary-glow: rgba(0, 255, 102, 0.4);
+    --danger: #ff3366;
+    --text-main: #c0ffd0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Share Tech Mono', monospace;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* CRT Scanline Effect */
+.scanlines {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 999;
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2rem;
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow);
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: #537a63;
+    margin-bottom: 25px;
+}
+
+.terminal-box {
+    background: var(--terminal-bg);
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px var(--primary-glow);
+    padding: 30px;
+    border-radius: 6px;
+    position: relative;
+}
+
+#level-display {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    border-bottom: 1px dashed var(--primary);
+    padding-bottom: 10px;
+}
+
+.badge {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+#challenge-container {
+    margin: 25px 0;
+    font-size: 1.2rem;
+    text-align: left;
+    background: #040810;
+    padding: 15px;
+    border-left: 4px solid var(--primary);
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+input[type="text"] {
+    flex: 1;
+    background: #000;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    outline: none;
+    box-shadow: inset 0 0 5px var(--primary-glow);
+}
+
+button {
+    background: var(--primary);
+    color: #000;
+    border: none;
+    padding: 0 25px;
+    font-family: 'Share Tech Mono', monospace;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+    background: #00cc52;
+    box-shadow: 0 0 10px var(--primary);
+}
+
+#feedback {
+    margin-top: 15px;
+    font-size: 1rem;
+    min-height: 24px;
+}
+
+.error {
+    color: var(--danger);
+    text-shadow: 0 0 5px rgba(255, 51, 102, 0.4);
+}
+
+.success {
+    color: var(--primary);
+    text-shadow: 0 0 5px var(--primary-glow);
+}
+
+.hidden {
+    display: none;
+}
