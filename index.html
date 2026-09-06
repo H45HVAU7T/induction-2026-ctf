@@ -3,43 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hash World - Cipher Relay</title>
+    <title>Hash World - Login</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="scanlines"></div>
-    <div class="container">
-        <header>
-            <h1> CIPHER RELAY</h1>
-            <p class="subtitle">SECURE TERMINAL V1.0.0</p>
-        </header>
-
-        <div id="game-box" class="terminal-box">
-            <div id="level-display">
-                <span class="badge">LEVEL <span id="current-level">1</span>/3</span>
-                <div id="timer">TIME: <span id="time-left">600</span>s</div>
-            </div>
-
-            <div id="challenge-container">
-                <!-- Dynamically loaded via script.js -->
-            </div>
-
-            <div class="input-group">
-                <input type="text" id="user-input" placeholder="ENTER DECRYPTED CODE..." autocomplete="off">
-                <button id="submit-btn" onclick="verifyAnswer()">TRANSMIT</button>
-            </div>
-            <p id="feedback"></p>
-        </div>
-
-        <div id="win-screen" class="terminal-box hidden">
-            <h2>ACCESS GRANTED</h2>
-            <p>Transmission successfully decrypted.</p>
-            <div class="stats">
-                <p>Final Time: <span id="final-time">0</span> seconds</p>
-            </div>
-            <button onclick="location.reload()">RESTART SYSTEM</button>
-        </div>
-    </div>
+    <main class="container narrow">
+        <header><h1>CIPHER RELAY</h1><p class="subtitle">SECURE TERMINAL V1.0.0</p></header>
+        <section class="terminal-box">
+            <p class="eyebrow">IDENTITY VERIFICATION</p>
+            <h2>Enter the relay</h2>
+            <p class="intro">Your name and email identify your leaderboard entry.</p>
+            <form id="login-form" novalidate>
+                <label for="name">USERNAME</label>
+                <input id="name" name="name" type="text" placeholder="ENTER YOUR NAME" autocomplete="name" required>
+                <label for="email">EMAIL</label>
+                <input id="email" name="email" type="email" placeholder="ENTER YOUR EMAIL" autocomplete="email" required>
+                <p class="warning">Your name will be displayed on the leaderboard and cannot be changed while playing. Check it carefully before continuing.</p>
+                <button type="submit" id="login-btn">ENTER RELAY</button>
+                <p id="feedback" role="alert" aria-live="polite"></p>
+            </form>
+        </section>
+    </main>
     <script src="script.js"></script>
 </body>
 </html>
