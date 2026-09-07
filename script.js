@@ -23,7 +23,22 @@ const challengePages = {
 
 const CHALLENGE_ORDER = Object.keys(challengePages);
 const FIRST_SECOND_HALF_CHALLENGE = "p4w8ne";
-const SECOND_HALF_UNLOCKED = true;
+const UNLOCK_ENDPOINT = "unlock.json";
+const STANDBY_POLL_MS = 30000;
+let secondHalfUnlocked = false;
+
+async function loadUnlockState() {
+  try {
+    const response = await fetch(`${UNLOCK_ENDPOINT}?ts=${Date.now()}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) return;
+    const data = await response.json();
+    secondHalfUnlocked = data.secondHalfUnlocked === true;
+  } catch {
+    return;
+  }
+}
 
 const getUserId = () => localStorage.getItem(SESSION_KEY);
 const timerKey = (userId, challengeId) =>
@@ -42,7 +57,7 @@ function resolveResumePage() {
   const completed = getCompletedChallenges();
   for (const challengeId of CHALLENGE_ORDER) {
     if (completed.includes(challengeId)) continue;
-    if (challengeId === FIRST_SECOND_HALF_CHALLENGE && !SECOND_HALF_UNLOCKED)
+    if (challengeId === FIRST_SECOND_HALF_CHALLENGE && !secondHalfUnlocked)
       return "standby.html";
     return challengePages[challengeId];
   }
@@ -241,23 +256,34 @@ async function submitChallenge(event) {
   }
 }
 
-const loginForm = document.getElementById("login-form");
-if (loginForm) {
-  redirectIfLoggedIn();
-  loginForm.addEventListener("submit", login);
+async function boot() {
+  await loadUnlockState();
+
+  const loginForm = document.getElementById("login-form");
+  if (loginForm) {
+    redirectIfLoggedIn();
+    loginForm.addEventListener("submit", login);
+  }
+
+  const answerForm = document.querySelector(".answer-form");
+  if (answerForm) {
+    const userId = getUserId();
+    const page = document.querySelector(".challenge-page");
+    if (enforceChallengeAccess(page.dataset.challengeId))
+      startChallengeTimer(userId, page.dataset.challengeId);
+    answerForm.addEventListener("submit", submitChallenge);
+  }
+
+  if (document.querySelector("[data-page='standby']")) {
+    enforceStaticPageAccess("standby.html");
+    setInterval(async () => {
+      await loadUnlockState();
+      if (secondHalfUnlocked) window.location.reload();
+    }, STANDBY_POLL_MS);
+  }
+
+  if (document.querySelector("[data-page='complete']"))
+    enforceStaticPageAccess("complete.html");
 }
 
-const answerForm = document.querySelector(".answer-form");
-if (answerForm) {
-  const userId = getUserId();
-  const page = document.querySelector(".challenge-page");
-  if (enforceChallengeAccess(page.dataset.challengeId))
-    startChallengeTimer(userId, page.dataset.challengeId);
-  answerForm.addEventListener("submit", submitChallenge);
-}
-
-if (document.querySelector("[data-page='standby']"))
-  enforceStaticPageAccess("standby.html");
-
-if (document.querySelector("[data-page='complete']"))
-  enforceStaticPageAccess("complete.html");
+boot();
