@@ -23,7 +23,7 @@ const challengePages = {
 
 const CHALLENGE_ORDER = Object.keys(challengePages);
 const FIRST_SECOND_HALF_CHALLENGE = "p4w8ne";
-const SECOND_HALF_UNLOCKED = false;
+const SECOND_HALF_UNLOCKED = true;
 
 const getUserId = () => localStorage.getItem(SESSION_KEY);
 const timerKey = (userId, challengeId) =>
