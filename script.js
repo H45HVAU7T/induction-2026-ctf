@@ -1,4 +1,4 @@
-const DOMAIN = "http://localhost:3002";
+const DOMAIN = "https://introdayserver.onrender.com";
 const LOGIN_ENDPOINT = DOMAIN + "/login";
 const CHALLENGE_ENDPOINT = DOMAIN + "/challenge";
 const SESSION_KEY = "cipherRelayUserId";
@@ -6,11 +6,11 @@ const COMPLETED_KEY = "cipherRelayCompleted";
 const TIMER_KEY_PREFIX = "cipherRelayChallengeStartedAt:";
 
 const challenges = {
-  "kx7qm2": "startup",
-  "a9f3zb": "hacker",
-  "p4w8ne": "safe",
-  "t2v6yc": "number",
-  "m5h1qd": "hashvault",
+  kx7qm2: "startup",
+  a9f3zb: "hacker",
+  p4w8ne: "safe",
+  t2v6yc: "number",
+  m5h1qd: "hashvault",
 };
 
 const getUserId = () => localStorage.getItem(SESSION_KEY);
