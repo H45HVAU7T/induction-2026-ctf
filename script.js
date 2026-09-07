@@ -13,9 +13,64 @@ const challenges = {
   m5h1qd: "hashvault",
 };
 
+const challengePages = {
+  kx7qm2: "kx7qm2.html",
+  a9f3zb: "a9f3zb.html",
+  p4w8ne: "p4w8ne.html",
+  t2v6yc: "t2v6yc.html",
+  m5h1qd: "m5h1qd.html",
+};
+
+const CHALLENGE_ORDER = Object.keys(challengePages);
+const FIRST_SECOND_HALF_CHALLENGE = "p4w8ne";
+const SECOND_HALF_UNLOCKED = false;
+
 const getUserId = () => localStorage.getItem(SESSION_KEY);
 const timerKey = (userId, challengeId) =>
   `${TIMER_KEY_PREFIX}${userId}:${challengeId}`;
+
+function getCompletedChallenges() {
+  try {
+    const completed = JSON.parse(localStorage.getItem(COMPLETED_KEY) || "[]");
+    return Array.isArray(completed) ? completed : [];
+  } catch {
+    return [];
+  }
+}
+
+function resolveResumePage() {
+  const completed = getCompletedChallenges();
+  for (const challengeId of CHALLENGE_ORDER) {
+    if (completed.includes(challengeId)) continue;
+    if (challengeId === FIRST_SECOND_HALF_CHALLENGE && !SECOND_HALF_UNLOCKED)
+      return "standby.html";
+    return challengePages[challengeId];
+  }
+  return "complete.html";
+}
+
+function enforceChallengeAccess(challengeId) {
+  if (!getUserId()) {
+    window.location.replace("index.html");
+    return false;
+  }
+  const expectedPage = resolveResumePage();
+  if (challengePages[challengeId] !== expectedPage) {
+    window.location.replace(expectedPage);
+    return false;
+  }
+  return true;
+}
+
+function enforceStaticPageAccess(selfPage) {
+  if (!getUserId()) {
+    window.location.replace("index.html");
+    return;
+  }
+  const resumePage = resolveResumePage();
+  if (resumePage !== selfPage) window.location.replace(resumePage);
+}
+
 const feedbackText = (element, text, type = "") => {
   element.textContent = text;
   element.className = type;
@@ -35,7 +90,7 @@ async function readResponse(response) {
 }
 
 function redirectIfLoggedIn() {
-  if (getUserId()) window.location.replace("kx7qm2.html");
+  if (getUserId()) window.location.replace(resolveResumePage());
 }
 
 function startChallengeTimer(userId, challengeId) {
@@ -69,14 +124,12 @@ async function login(event) {
   button.disabled = true;
   feedbackText(feedback, "REGISTERING IDENTITY...");
   try {
-    console.log("Hello");
     const response = await fetch(LOGIN_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: name, email }),
     });
     const data = await readResponse(response);
-    console.log("data", data);
     if (!response.ok) {
       const duplicate = response.status === 409;
       feedbackText(
@@ -102,7 +155,7 @@ async function login(event) {
     Object.keys(localStorage)
       .filter((key) => key.startsWith(TIMER_KEY_PREFIX))
       .forEach((key) => localStorage.removeItem(key));
-    window.location.replace("kx7qm2.html");
+    window.location.replace(resolveResumePage());
   } catch (error) {
     feedbackText(
       feedback,
@@ -198,7 +251,13 @@ const answerForm = document.querySelector(".answer-form");
 if (answerForm) {
   const userId = getUserId();
   const page = document.querySelector(".challenge-page");
-  if (!userId) window.location.replace("index.html");
-  else startChallengeTimer(userId, page.dataset.challengeId);
+  if (enforceChallengeAccess(page.dataset.challengeId))
+    startChallengeTimer(userId, page.dataset.challengeId);
   answerForm.addEventListener("submit", submitChallenge);
 }
+
+if (document.querySelector("[data-page='standby']"))
+  enforceStaticPageAccess("standby.html");
+
+if (document.querySelector("[data-page='complete']"))
+  enforceStaticPageAccess("complete.html");
