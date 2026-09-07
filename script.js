@@ -6,11 +6,11 @@ const COMPLETED_KEY = "cipherRelayCompleted";
 const TIMER_KEY_PREFIX = "cipherRelayChallengeStartedAt:";
 
 const challenges = {
-  "challenge-1": "startup",
-  "challenge-2": "hacker",
-  "challenge-3": "safe",
-  "challenge-4": "number",
-  "challenge-5": "hashvault",
+  "kx7qm2": "startup",
+  "a9f3zb": "hacker",
+  "p4w8ne": "safe",
+  "t2v6yc": "number",
+  "m5h1qd": "hashvault",
 };
 
 const getUserId = () => localStorage.getItem(SESSION_KEY);
@@ -35,7 +35,7 @@ async function readResponse(response) {
 }
 
 function redirectIfLoggedIn() {
-  if (getUserId()) window.location.replace("challenge-1.html");
+  if (getUserId()) window.location.replace("kx7qm2.html");
 }
 
 function startChallengeTimer(userId, challengeId) {
@@ -102,7 +102,7 @@ async function login(event) {
     Object.keys(localStorage)
       .filter((key) => key.startsWith(TIMER_KEY_PREFIX))
       .forEach((key) => localStorage.removeItem(key));
-    window.location.replace("challenge-1.html");
+    window.location.replace("kx7qm2.html");
   } catch (error) {
     feedbackText(
       feedback,
